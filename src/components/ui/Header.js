@@ -1,7 +1,25 @@
 import React from 'react';
 import '../styles/style.css';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 function Header() {
+  const navbarListStyle = {
+    listStyle: 'none', // Remove default list styles
+    padding: 0,
+    margin: 0,
+    textAlign: 'center', // Center-align the list items
+  };
+
+  const navbarItemStyle = {
+    display: 'inline-block', // Display list items inline
+    margin: '0 10px', // Add spacing between items
+  };
+
+  const linkStyle = {
+    textDecoration: 'none', // Remove underline from links
+    color: 'white', // Set link color
+    fontSize:"20px"
+  };
   return (
     <header className="header">
       <div className="container">
@@ -9,12 +27,28 @@ function Header() {
           <img src="./assets/images/logo.png" width="128" height="63" alt="autofix home" />
         </a>
         <nav className="navbar">
-          <ul className="navbar-list">
-            {["Home", "About", "Services", "Projects", "Contact"].map((item) => (
-              <li key={item}>
-                <a href="#" className="navbar-link">{item}</a>
-              </li>
-            ))}
+        <ul className="navbar-list" style={navbarListStyle}>
+        <li style={navbarItemStyle}>
+              <Link to="/" style={linkStyle}>Home</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/about" style={linkStyle}>About</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/services" style={linkStyle}>Services</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/projects" style={linkStyle}>Projects</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/contact" style={linkStyle}>Contact</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/login" style={linkStyle}>Login</Link>
+            </li>
+            <li style={navbarItemStyle}>
+              <Link to="/signup" style={linkStyle}>Signup</Link>
+            </li>
           </ul>
         </nav>
         <a href="#" className="btn btn-primary">
