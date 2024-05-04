@@ -19,7 +19,7 @@ function Header() {
         </nav>
         <a href="#" className="btn btn-primary">
           <span className="span">Get a Quote</span>
-          <span className="material-symbols-rounded">arrow_forward</span>
+          <span className="material-symbols-rounded">➡️</span>
         </a>
         <button className="nav-toggle-btn" aria-label="toggle menu">
           <span className="nav-toggle-icon icon-1"></span>
