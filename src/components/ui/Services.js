@@ -18,10 +18,10 @@ function ServiceCard({ imgSrc, title, description }) {
 function Services() {
   const services = [
     { imgSrc: "./assets/images/services-1.png", title: "Engine Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
+    
     { imgSrc: "./assets/images/services-2.png", title: "Brake Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
     { imgSrc: "./assets/images/services-3.png", title: "Tire Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
     { imgSrc: "./assets/images/services-4.png", title: "Battery Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
-    { imgSrc: "./assets/images/services-6.png", title: "Steering Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" }
   ];
 
   return (

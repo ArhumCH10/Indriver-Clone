@@ -404,9 +404,9 @@
   
   .hero .container {
     display: grid;
-    gap: 0px;
+    grid-template-columns: 60% 40%; /* Allocate 40% of space to the image */
   }
-  
+
   .hero .section-subtitle { text-transform: unset; }
   
   .hero .section-text {
@@ -416,20 +416,19 @@
   
   .hero .btn { margin-inline: auto; }
   
-  .hero-banner { aspect-ratio: var(--width) / var(--height); }
-  
-  .hero-banner img {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 90%;
-    z-index: -1;
+  .hero-banner {
+    grid-column: 2; /* Position in the second column */
+    display: flex;
+    justify-content: flex-end; /* Align right */
   }
   
-  
-  
-  
-  
+  .hero-banner img {
+    width: 120% !important; /* Full width of its container */
+    max-width: 900px !important; /* Maximum width to maintain design */
+    height: auto !important; /* Maintain aspect ratio */
+    position: static !important; /* Override any existing positioning */
+  }
+
   /*-----------------------------------*\
     #SERVICE
   \*-----------------------------------*/
@@ -1002,7 +1001,7 @@
     .about-banner,
     .about-banner .w-100 { margin-inline: auto 0; }
   
-    .about-banner .w-100 { width: 40%; }
+    .about-banner .w-100 { width: 100%; }
   
     .about-item { text-align: center; }
   
@@ -1064,7 +1063,7 @@
      */
   
     .container,
-    .hero .container { max-width: 1140px; }
+    .hero .container { max-width: 3000px; }
   
     .btn { padding: 18px 36px; }
   
@@ -1110,7 +1109,7 @@
   
     .service .section-title { max-width: 700px; }
   
-    .service-list { margin-block-end: 70px; }
+    .service-list { margin-block-end: 170px; }
   
     .service-list li:nth-child(2) .card-text {
       padding-inline: 50px;
@@ -1130,7 +1129,7 @@
   
     .service-banner img {
       width: max-content;
-      left: -41%;
+      left: -30%;
     }
   
   

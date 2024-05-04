@@ -14,8 +14,8 @@ function Hero() {
             <span className="material-symbols-rounded">arrow_forward</span>
           </a>
         </div>
-        <figure className="hero-banner" style={{ width: 128, height: 789 }}>
-          <img src="./assets/images/hero-banner.png" width="128" height="789" alt="red motor vehicle" className="move-anim" />
+        <figure className="hero-banner">
+          <img src="./assets/images/hero-banner.png" alt="red motor vehicle" className="move-anim" />
         </figure>
       </div>
     </section>
