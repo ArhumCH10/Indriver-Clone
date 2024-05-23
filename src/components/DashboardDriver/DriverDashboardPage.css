@@ -1,0 +1,119 @@
+/* DriverDashboardPage.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .driver-dashboard {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .driver-dashboard h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .vehicle-form, .activation-section, .booking-requests {
+    margin-bottom: 30px;
+  }
+  
+  .vehicle-form h2, .activation-section h2, .booking-requests h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .vehicle-form input, .activation-section button, .booking-request button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .vehicle-form input:focus, .activation-section button:focus, .booking-request button:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .add-vehicle-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 8px;
+    border-radius: 3px;
+  }
+  
+  .add-vehicle-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .status-button {
+    padding: 15px;
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .status-button.active {
+    background-color: #28a745;
+  }
+  
+  .status-button.inactive {
+    background-color: #dc3545;
+  }
+  
+  .booking-requests .booking-request {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .booking-requests .booking-request p {
+    margin: 0;
+    flex: 1;
+  }
+  
+  .accept-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .accept-button:hover {
+    background-color: #218838;
+  }
+  
+  .reject-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .reject-button:hover {
+    background-color: #c82333;
+  }
+  

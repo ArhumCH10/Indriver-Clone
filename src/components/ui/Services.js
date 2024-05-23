@@ -22,6 +22,7 @@ function Services() {
     { imgSrc: "./assets/images/services-2.png", title: "Brake Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
     { imgSrc: "./assets/images/services-3.png", title: "Tire Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
     { imgSrc: "./assets/images/services-4.png", title: "Battery Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
+    
   ];
 
   return (

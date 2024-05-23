@@ -7,7 +7,7 @@ function Footer() {
         <div className="container">
           <div className="footer-brand">
             <a href="#" className="logo">
-              <img src="./assets/images/logo.png" width="128" height="63" alt="autofix home" />
+              <img src="./assets/images/Logo.png" width="128" height="63" alt="autofix home" />
             </a>
             <p className="footer-text">
               Rerum necessitatibus saepe eveniet aut et voluptates repudiandae sint et molestiae non recusandae.

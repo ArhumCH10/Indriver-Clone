@@ -89,6 +89,7 @@ const SignUpForm1 = () => {
           navigate('/'); // Navigate to the root route ("/")
         }
       };
+
   return (
     <div style={formContainer}>
     <div style={imageContainer}>
@@ -230,6 +231,12 @@ const SignUpForm2 = () => {
           confirmPassword: '',
         });
       };
+
+      const handleButtonClick = (type) => {
+        if (type === 'cancel') {
+            navigate('/');
+        }
+    };
   return (
     <div style={formContainer}>
     <div style={imageContainer}>
@@ -285,7 +292,7 @@ const SignUpForm2 = () => {
           <Button   type="submit" variant="contained" color="primary" style={buttonStyle}>
             Sign Up
           </Button>
-          <Button           onClick={() => handleButtonClick('cancel')}
+          <Button onClick={() => handleButtonClick('cancel')}
  type="button" variant="contained" color="default" style={buttonStyle}>
             Cancel
           </Button>

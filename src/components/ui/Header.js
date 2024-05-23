@@ -24,7 +24,7 @@ function Header() {
     <header className="header">
       <div className="container">
         <a href="#" className="logo">
-          <img src="./assets/images/logo.png" width="128" height="63" alt="autofix home" />
+          <img src="./assets/images/Logo.png" width="158" height="100" alt="autofix home" />
         </a>
         <nav className="navbar">
         <ul className="navbar-list" style={navbarListStyle}>

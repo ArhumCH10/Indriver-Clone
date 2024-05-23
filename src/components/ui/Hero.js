@@ -7,7 +7,7 @@ function Hero() {
       <div className="container">
         <div className="hero-content">
           <p className="section-subtitle :dark">We have talented engineers & mechanics</p>
-          <h1 className="h1 section-title">Auto Maintenance & Repair Service</h1>
+          <h1 className="h1 section-title">Auto Maintenance & Car Booking System</h1>
           <p className="section-text">Duis aute irure dolor in reprehenderit in voluptate velit esse Excepteur sint occaecat cupidatat non proident.</p>
           <a href="#" className="btn">
             <span className="span">Our Services</span>

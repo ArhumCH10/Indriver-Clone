@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function loginPage() {
+function LoginPage() {
 
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -45,8 +45,25 @@ function loginPage() {
             // Save user object and token to local storage
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
-            navigate('/dashboard');
-            toast.success('Login successful!');
+ 
+            const user = data.user;
+            if (user.userType === 'user') {
+              toast.success('Login successful!');
+              navigate('/userdashboard/dashboard');
+            } else if (user.userType === 'driver')
+              {
+                toast.success('Login successful!');
+                navigate('/driverdashboard/dashboard');
+              }
+              else if (user.userType === 'mechanic')
+                {
+                  toast.success('Login successful!');
+                  navigate('/mechanicdashboard/dashboard');
+                }
+            else {
+              toast.error('Unknown user type.');
+            }
+            
           } else {
             const errorData = await response.json();
             toast.error(errorData.error || 'Login failed.');
@@ -81,9 +98,9 @@ function loginPage() {
     <div style={buttonGroupStyle}>
     <button onClick={() => handleButtonClick(1)} style={{
             ...buttonStyle,
-            borderRadius: '30px 30px 0px 0px',    marginLeft:"-540px"
+            borderRadius: '30px 30px 0px 0px',    marginLeft:"-240px"
           }}>
-          AUTOFIX
+          Mobile Car Maintenance and Petrol Service
         </button>
         </div>
 
@@ -225,4 +242,4 @@ const container = {
   };
   
   
-export default loginPage
+export default LoginPage
