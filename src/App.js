@@ -15,13 +15,13 @@ import DestinationPage from './components/Dashboard/DestinationPage';
 function App() {
   return (
     <Router>
-      <GlobalStyle />
+
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
-          <Route path="dashboard" index element={<UserDashboardPage />} />
+          <Route path="dashboard/*" index element={<UserDashboardPage />} />
           <Route path="destination" element={<DestinationPage/>} />
         </Route>
 
