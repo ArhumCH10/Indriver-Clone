@@ -1,6 +1,9 @@
 // DriverDashboardPage.js
 import React, { useState } from 'react';
 import './DriverDashboardPage.css';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function DriverDashboardPage() {
   const [vehicle, setVehicle] = useState({ type: '', model: '', licensePlate: '' });
@@ -12,15 +15,45 @@ function DriverDashboardPage() {
     setVehicle({ ...vehicle, [name]: value });
   };
 
-  const handleAddVehicle = () => {
-    // Add the vehicle to the system (this would involve an API call in a real app)
-    alert('Vehicle added successfully!');
-  };
 
-  const handleActivate = () => {
-    setIsActive(!isActive);
-    // Get current location and update driver status (this would involve an API call in a real app)
-    alert(isActive ? 'Driver deactivated' : 'Driver activated and location updated');
+  const handleAddVehicle = async () => {
+    try {
+      const { type, model, licensePlate } = vehicle;
+      if (!type || !model || !licensePlate ) {
+        toast.error('Please fill in all fields');
+        return;
+      }
+      const response = await axios.post(`http://localhost:8080/vehicle/add-vehicle`, null, {
+        params: { type, model, licensePlate }
+      });
+      if (response.status === 200) {
+        toast.success('Vehicle added successfully!');
+        setVehicle({ type: '', model: '', licensePlate: '' }); // Reset the form
+      }
+    } catch (error) {
+      toast.error('Error adding vehicle: ' + (error.response?.data?.error || error.message));
+    }
+  };
+  const handleActivate = async () => {
+    try {
+      const userString = localStorage.getItem('user');
+if (!userString) {
+  toast.error('User is not authenticated');
+  return;
+}
+
+const user = JSON.parse(userString);
+const userId = user._id;
+
+      const response = await axios.post('http://localhost:8080/user/toggle-active', { userId });
+
+      if (response.status === 200) {
+        setIsActive(prevState => !prevState);
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      alert('Error toggling status: ' + (error.response?.data?.error || error.message));
+    }
   };
 
   const handleBookingResponse = (bookingId, response) => {
@@ -32,6 +65,7 @@ function DriverDashboardPage() {
   return (
     <div className="driver-dashboard">
       <h1>Driver Dashboard</h1>
+      <ToastContainer />
 
       <div className="vehicle-form">
         <h2>Add Vehicle</h2>
@@ -62,7 +96,7 @@ function DriverDashboardPage() {
       <div className="activation-section">
         <h2>Driver Status</h2>
         <button onClick={handleActivate} className={`status-button ${isActive ? 'active' : 'inactive'}`}>
-          {isActive ? 'Deactivate' : 'Activate'}
+          {isActive ? 'Deactive' : 'Active'}
         </button>
       </div>
 

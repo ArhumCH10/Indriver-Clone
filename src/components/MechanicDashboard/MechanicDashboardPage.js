@@ -1,9 +1,11 @@
-// MechanicDashboardPage.js
 import React, { useState } from 'react';
 import './MechanicDashboardPage.css';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function MechanicDashboardPage() {
-  const [mechanic, setMechanic] = useState({ name: '', expertise: '' });
+  const [mechanic, setMechanic] = useState({ name: '', expertise: '', experience: '', contactNumber: '' });
   const [isActive, setIsActive] = useState(false);
   const [requests, setRequests] = useState([
     { id: 1, details: 'Engine repair for Honda Accord' },
@@ -16,17 +18,56 @@ function MechanicDashboardPage() {
     setMechanic({ ...mechanic, [name]: value });
   };
 
-  const handleAddMechanic = () => {
-    // Add the mechanic to the system (this would involve an API call in a real app)
-    alert('Mechanic added successfully!');
+  const handleAddMechanic =async () => {
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      toast.error('User is not authenticated');
+      return;
+    }
+    
+    const user = JSON.parse(userString);
+    const userId = user._id;
+    console.log('Mechanic details:', mechanic);
+    try {
+      const { name, expertise, experience,contactNumber } = mechanic;
+      if (!name || !expertise || !experience || !contactNumber) {
+        toast.error('Please fill in all fields');
+        return;
+      }
+      const response = await axios.post(`http://localhost:8080/user/add-mechanic`, null, {
+        params: { userId,name, expertise, experience,contactNumber }
+      });
+      if (response.status === 200) {
+        toast.success('Mechanic added successfully!');
+        setMechanic({ name: '', expertise: '', experience: '',contactNumber:'' }); // Reset the form
+      }
+    } catch (error) {
+      toast.error('Error adding mechanic: ' + (error.response?.data?.error || error.message));
+    }
   };
+  
 
-  const handleActivate = () => {
-    setIsActive(!isActive);
-    // Update mechanic status (this would involve an API call in a real app)
-    alert(isActive ? 'Mechanic deactivated' : 'Mechanic activated');
+  const handleActivate = async () => {
+    try {
+      const userString = localStorage.getItem('user');
+if (!userString) {
+  toast.error('User is not authenticated');
+  return;
+}
+
+const user = JSON.parse(userString);
+const userId = user._id;
+
+      const response = await axios.post('http://localhost:8080/user/toggle-active', { userId });
+
+      if (response.status === 200) {
+        setIsActive(prevState => !prevState);
+        toast(response.data.message);
+      }
+    } catch (error) {
+      toast.error('Error toggling status: ' + (error.response?.data?.error || error.message));
+    }
   };
-
   const handleRequestResponse = (requestId, response) => {
     // Handle request response (this would involve an API call in a real app)
     setRequests(requests.filter(request => request.id !== requestId));
@@ -36,6 +77,7 @@ function MechanicDashboardPage() {
   return (
     <div className="mechanic-dashboard">
       <h1>Mechanic Dashboard</h1>
+      <ToastContainer />
 
       <div className="mechanic-form">
         <h2>Add Mechanic</h2>
@@ -53,13 +95,27 @@ function MechanicDashboardPage() {
           value={mechanic.expertise}
           onChange={handleMechanicChange}
         />
+        <input
+          type="text"
+          name="experience"
+          placeholder="Experience (Years)"
+          value={mechanic.experience}
+          onChange={handleMechanicChange}
+        />
+        <input
+          type="text"
+          name="contactNumber"
+          placeholder="Contact Number"
+          value={mechanic.contactNumber}
+          onChange={handleMechanicChange}
+        />
         <button onClick={handleAddMechanic} className="add-mechanic-button">Add Mechanic</button>
       </div>
 
       <div className="activation-section">
         <h2>Mechanic Status</h2>
         <button onClick={handleActivate} className={`status-button ${isActive ? 'active' : 'inactive'}`}>
-          {isActive ? 'Deactivate' : 'Activate'}
+          {isActive ? 'Deactive' : 'Activate'}
         </button>
       </div>
 
