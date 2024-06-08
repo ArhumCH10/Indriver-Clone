@@ -30,4 +30,7 @@
     border-radius: 5px;
     width: 100%;
   }
-  
+  .Select__menu {
+    z-index: 1000 !important;
+    position: absolute !important;
+  }
