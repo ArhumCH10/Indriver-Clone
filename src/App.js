@@ -11,6 +11,7 @@ import DriverDashboardLinks from './components/DashboardDriver/DriverDashboardLi
 import MechanicDashboardLinks from './components/MechanicDashboard/MechanicDashboardLinks';
 import MechanicDashboardPage from './components/MechanicDashboard/MechanicDashboardPage';
 import DestinationPage from './components/Dashboard/DestinationPage';
+import ProfilePageUser from './components/Dashboard/ProfilePageUser';
 
 function App() {
   return (
@@ -23,7 +24,12 @@ function App() {
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
           <Route path="dashboard/*" index element={<UserDashboardPage />} />
           <Route path="destination" element={<DestinationPage/>} />
+
         </Route>
+        <Route path="/profile-page-user" element={<ProfilePageUser />} />
+
+
+
 
         <Route path="/driverdashboard" element={<DriverDashboardLinks/>}>
           <Route path="dashboard" index element={<DriverDashboardPage />} />

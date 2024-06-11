@@ -15,6 +15,10 @@ const StyledHeaderMenu = styled.ul`
 
 export default function DriverHeaderMenu() {
    // const navigate = useNavigate();
+   const handleClick = () => {
+    console.log('Icon clicked!');
+  };
+
   return (
    <StyledHeaderMenu>
    <li>
@@ -24,7 +28,7 @@ export default function DriverHeaderMenu() {
     </li>
     <li>
         <ButtonIcon>
-            <HiOutlineUser />
+        <HiOutlineUser onClick={handleClick} style={{ cursor: 'pointer' }} />
         </ButtonIcon>
     </li>
         <li>

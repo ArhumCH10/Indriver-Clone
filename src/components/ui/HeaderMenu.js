@@ -4,6 +4,7 @@ import ButtonIcon from "./ButtonIcon";
 import { HiOutlineUser } from "react-icons/hi2";
 import { HiOutlineBell } from 'react-icons/hi';
 import LogOut from "./LogOut";
+import { useNavigate } from 'react-router-dom';
 //import { useNavigate } from "react-router-dom";
 
 const StyledHeaderMenu = styled.ul`
@@ -16,7 +17,11 @@ const StyledHeaderMenu = styled.ul`
 
 
 export default function HeaderMenu() {
-   // const navigate = useNavigate();
+   const navigate = useNavigate();
+   const handleClick = () => {
+navigate("/profile-page-user")  
+};
+
   return (
    <StyledHeaderMenu>
    <li>
@@ -26,7 +31,7 @@ export default function HeaderMenu() {
     </li>
     <li>
         <ButtonIcon>
-            <HiOutlineUser/>
+        <HiOutlineUser onClick={handleClick} style={{ cursor: 'pointer' }} />
         </ButtonIcon>
     </li>
         <li>
