@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polyline, useMap, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
@@ -66,6 +66,7 @@ function MapComponent() {
   const [suggestions, setSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [route, setRoute] = useState(null);
+  const [drivers, setDrivers] = useState([]);
 
   const pickUpRef = useRef(null);
   const destinationRef = useRef(null);
@@ -106,6 +107,7 @@ function MapComponent() {
       fetchRoute();
     }
   }, [destinationMarker, marker]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (pickUpRef.current && !pickUpRef.current.contains(event.target)) {
@@ -123,7 +125,6 @@ function MapComponent() {
     };
   }, [pickUpRef, destinationRef]);
 
-
   const handleShowMyLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -137,7 +138,6 @@ function MapComponent() {
           .then(response => {
             setAddress(response.data.display_name);
             setPickUp(response.data.display_name);
-
           })
           .catch(error => {
             console.error('Error fetching address data:', error);
@@ -172,7 +172,8 @@ function MapComponent() {
     setSuggestions([]);
   };
 
-  const handleDestinationChange = (e) => {
+  const handleDestinationChange =
+  (e) => {
     const inputValue = e.target.value;
     setDestination(inputValue);
     if (inputValue.length > 1) {
@@ -184,14 +185,44 @@ function MapComponent() {
           console.error('Error fetching autocomplete suggestions:', error);
         });
     }
-  };
+};
 
-  const handleDestinationSuggestionSelect = (suggestion) => {
-    setDestination(suggestion.display_name);
-    setDestinationMarker({ lat: suggestion.lat, lng: suggestion.lon });
-    setDestinationSuggestions([]);
+const handleDestinationSuggestionSelect = (suggestion) => {
+  setDestination(suggestion.display_name);
+  setDestinationMarker({ lat: suggestion.lat, lng: suggestion.lon });
+  setDestinationSuggestions([]);
+};
 
-  };
+const handleSearch = async () => {
+  if (!marker || !destinationMarker) {
+    alert('Please set both pick-up and destination locations.');
+    return;
+  }
+  try {
+    console.log('Fetching route and available drivers...');
+    const coordinates = `${marker.lng},${marker.lat};${destinationMarker.lng},${destinationMarker.lat}`;
+    const routeResponse = await axios.get(`https://us1.locationiq.com/v1/directions/driving/${coordinates}?key=${ACCESS_TOKEN}&overview=false&annotations=true`);
+    const distance = routeResponse.data.routes[0].distance; // Distance in meters
+
+    const driversResponse = await axios.get('http://localhost:8080/user/active-drivers');
+
+    if (!Array.isArray(driversResponse.data)) {
+      throw new Error("Expected an array of drivers");
+    }
+
+    const driversData = driversResponse.data.map(driver => ({
+      ...driver,
+      price: (distance / 1000) * 2, // Example pricing calculation: $2 per km
+    }));
+
+    console.log('Drivers data:', driversData);
+    setDrivers(driversData);
+    navigate('/driver-status', { state: { drivers: driversData } });
+  } catch (error) {
+    console.error('Error fetching available drivers:', error);
+  }
+};
+
 
   return (
     <div>
@@ -209,80 +240,58 @@ function MapComponent() {
                 style={{ marginBottom: '10px', padding: '10px', borderColor: '#ccc', width: '100%' }}
               />
               {suggestions.length > 0 && (
-                <div style={{ position: 'absolute', zIndex: 1000, backgroundColor: 'white', border: '1px solid #ccc', width: '100%' }}>
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleSuggestionSelect(suggestion)}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                      style={{
-                        padding: '10px',
-                        cursor: 'pointer',
-                        borderBottom: '1px solid #ccc',
-                      }}
-                    >
+                <ul className="suggestions-list">
+                  {suggestions.map(suggestion => (
+                    <li key={suggestion.place_id} onClick={() => handleSuggestionSelect(suggestion)}>
                       {suggestion.display_name}
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
             <div ref={destinationRef} style={{ position: 'relative', width: '100%' }}>
               <input
                 type="text"
                 id="destination"
-                placeholder="Where to?"
+                placeholder="Enter destination"
                 value={destination}
                 onChange={handleDestinationChange}
                 style={{ padding: '10px', borderColor: '#ccc', width: '100%' }}
               />
               {destinationSuggestions.length > 0 && (
-                <div style={{ position: 'absolute', zIndex: 1000, backgroundColor: 'white', border: '1px solid #ccc', width: '100%' }}>
-                  {destinationSuggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleDestinationSuggestionSelect(suggestion)}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                      style={{
-                        padding: '10px',
-                        cursor: 'pointer',
-                        borderBottom: '1px solid #ccc',
-                      }}
-                    >
+                <ul className="suggestions-list">
+                  {destinationSuggestions.map(suggestion => (
+                    <li key={suggestion.place_id} onClick={() => handleDestinationSuggestionSelect(suggestion)}>
                       {suggestion.display_name}
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
           </div>
-          <button onClick={handleShowMyLocation}
-            onMouseOver={(e) => (e.target.style.color = "blue")}
-            onMouseOut={(e) => (e.target.style.color = "black")}
-          >
-            <div style={{ background: 'transparent' }}>
-              <FaLocationCrosshairs style={{ color: 'blue' }} />
-            </div>
-            Show My Location
-          </button>
+          <button onClick={handleSearch}>Search</button>
         </div>
       </div>
-      <MapContainer
-        center={location}
-        zoom={15}
-        style={{ height: "400px", width: "100%" }}
-      >
+      <MapContainer center={location} zoom={13} style={{ height: "100vh", width: "100%" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <Marker position={marker} icon={markerIcon} />
-        {destinationMarker && <Marker position={destinationMarker} icon={destinationMarkerIcon} />}
-        <SetViewOnChange coords={location} />
+        <Marker position={marker} icon={markerIcon}>
+          <Popup>{address}</Popup>
+        </Marker>
+        {destinationMarker && (
+          <Marker position={destinationMarker} icon={destinationMarkerIcon}>
+            <Popup>{destination}</Popup>
+          </Marker>
+        )}
         {route && <Polyline positions={route} color="blue" />}
+        <SetViewOnChange coords={location} />
         <AdjustZoomLevel route={route} />
       </MapContainer>
+      <button onClick={handleShowMyLocation} className="my-location-button">
+        <FaLocationCrosshairs size={30} />
+      </button>
     </div>
   );
 }

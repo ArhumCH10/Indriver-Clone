@@ -1,5 +1,4 @@
-// DriverDashboardPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DriverDashboardPage.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,23 +8,58 @@ function DriverDashboardPage() {
   const [vehicle, setVehicle] = useState({ type: '', model: '', licensePlate: '' });
   const [isActive, setIsActive] = useState(false);
   const [bookingRequests, setBookingRequests] = useState([]);
+  const [driverLocation, setDriverLocation] = useState(null); // State to hold driver location
+
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        const userString = localStorage.getItem('user');
+        if (!userString) {
+          toast.error('User is not authenticated');
+          return;
+        }
+
+        const user = JSON.parse(userString);
+        const userId = user._id;
+
+        const response = await axios.get(`http://localhost:8080/user/status/${userId}`);
+        if (response.status === 200) {
+          setIsActive(response.data.active);
+        }
+      } catch (error) {
+        toast.error('Error fetching user status: ' + (error.response?.data?.error || error.message));
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
 
   const handleVehicleChange = (e) => {
     const { name, value } = e.target;
     setVehicle({ ...vehicle, [name]: value });
   };
 
-
   const handleAddVehicle = async () => {
     try {
       const { type, model, licensePlate } = vehicle;
-      if (!type || !model || !licensePlate ) {
+      if (!type || !model || !licensePlate) {
         toast.error('Please fill in all fields');
         return;
       }
-      const response = await axios.post(`http://localhost:8080/vehicle/add-vehicle`, null, {
-        params: { type, model, licensePlate }
+
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        toast.error('User is not authenticated');
+        return;
+      }
+
+      const user = JSON.parse(userString);
+      const userId = user._id;
+
+      const response = await axios.post('http://localhost:8080/vehicle/add-vehicle', null, {
+        params: { type, model, licensePlate, userId }
       });
+
       if (response.status === 200) {
         toast.success('Vehicle added successfully!');
         setVehicle({ type: '', model: '', licensePlate: '' }); // Reset the form
@@ -34,31 +68,70 @@ function DriverDashboardPage() {
       toast.error('Error adding vehicle: ' + (error.response?.data?.error || error.message));
     }
   };
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject('Geolocation is not supported by your browser');
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            resolve({ latitude, longitude });
+          },
+          () => {
+            reject('Unable to retrieve your location');
+          }
+        );
+      }
+    });
+  };
+
   const handleActivate = async () => {
     try {
       const userString = localStorage.getItem('user');
-if (!userString) {
-  toast.error('User is not authenticated');
-  return;
-}
+      if (!userString) {
+        toast.error('User is not authenticated');
+        return;
+      }
 
-const user = JSON.parse(userString);
-const userId = user._id;
+      const user = JSON.parse(userString);
+      const userId = user._id;
 
-      const response = await axios.post('http://localhost:8080/user/toggle-active', { userId });
+      if (!isActive) {
+        try {
+          const { latitude, longitude } = await getCurrentLocation();
+          const response = await axios.post('http://localhost:8080/user/toggle-active', { userId, latitude, longitude });
 
-      if (response.status === 200) {
-        setIsActive(prevState => !prevState);
-        toast.success(response.data.message);
+          if (response.status === 200) {
+            setIsActive(true);
+            setDriverLocation({ latitude, longitude });
+            toast.success(response.data.message);
+          }
+        } catch (locationError) {
+          toast.error(locationError);
+        }
+      } else {
+        const response = await axios.post('http://localhost:8080/user/toggle-active', { userId, latitude: null, longitude: null });
+
+        if (response.status === 200) {
+          setIsActive(false);
+          setDriverLocation(null);
+          toast.success(response.data.message, {
+            onClose: () => {
+              toast.info('You have become offline');
+            }
+          });
+        }
       }
     } catch (error) {
-      alert('Error toggling status: ' + (error.response?.data?.error || error.message));
+      toast.error('Error toggling status: ' + (error.response?.data?.error || error.message));
     }
   };
 
   const handleBookingResponse = (bookingId, response) => {
     // Handle booking response (this would involve an API call in a real app)
-    setBookingRequests(bookingRequests.filter(request => request.id !== bookingId));
+    setBookingRequests(bookingRequests.filter((request) => request.id !== bookingId));
     alert(`Booking ${response}`);
   };
 
@@ -96,16 +169,24 @@ const userId = user._id;
       <div className="activation-section">
         <h2>Driver Status</h2>
         <button onClick={handleActivate} className={`status-button ${isActive ? 'active' : 'inactive'}`}>
-          {isActive ? 'Deactive' : 'Active'}
+          {isActive ? 'Deactivate' : 'Activate'}
         </button>
       </div>
+
+      {driverLocation && (
+        <div className="location-info">
+          <h2>Current Location</h2>
+          <p>Latitude: {driverLocation.latitude}</p>
+          <p>Longitude: {driverLocation.longitude}</p>
+        </div>
+      )}
 
       <div className="booking-requests">
         <h2>Booking Requests</h2>
         {bookingRequests.length === 0 ? (
           <p>No booking requests</p>
         ) : (
-          bookingRequests.map(request => (
+          bookingRequests.map((request) => (
             <div key={request.id} className="booking-request">
               <p>{request.details}</p>
               <button onClick={() => handleBookingResponse(request.id, 'accepted')} className="accept-button">Accept</button>

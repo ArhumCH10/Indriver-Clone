@@ -12,6 +12,7 @@ import MechanicDashboardLinks from './components/MechanicDashboard/MechanicDashb
 import MechanicDashboardPage from './components/MechanicDashboard/MechanicDashboardPage';
 import DestinationPage from './components/Dashboard/DestinationPage';
 import ProfilePageUser from './components/Dashboard/ProfilePageUser';
+import DriverStatusPage from './components/DashboardDriver/DriverStatusPage';
 
 function App() {
   return (
@@ -27,8 +28,7 @@ function App() {
 
         </Route>
         <Route path="/profile-page-user" element={<ProfilePageUser />} />
-
-
+        <Route path="/driver-status" element={<DriverStatusPage/>} />
 
 
         <Route path="/driverdashboard" element={<DriverDashboardLinks/>}>
