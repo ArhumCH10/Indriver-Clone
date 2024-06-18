@@ -1,4 +1,4 @@
-/* DestinationPage.css */
+/* DestinationPage.css
 .destination-container {
     display: flex;
     flex-direction: column;
@@ -32,5 +32,94 @@
   }
   .Select__menu {
     z-index: 1000 !important;
-    position: absolute !important;
-  }
+    position: absolute !important; 
+  } */
+
+  /* DestinationPage.css */
+
+.destination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.destination-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.back-icon {
+  cursor: pointer;
+}
+
+.destination-inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 20px;
+}
+
+.destination-inputs input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.suggestions-list {
+  position: absolute;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.my-location-button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background-color: white;
+  color:black;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.my-location-button:hover {
+  background-color: #f0f0f0;
+  color: rgb(55, 90, 247);
+}
+
+.find-driver-btn {
+  padding: 10px ;
+  background-color: rgb(88, 88, 233);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: -10px;
+}
+
+.find-driver-btn:hover {
+  background-color: darkblue;
+}

@@ -269,7 +269,7 @@ const handleSearch = async () => {
               )}
             </div>
           </div>
-          <button onClick={handleSearch}>Search</button>
+          <button className='find-driver-btn' onClick={handleSearch}>Find Driver</button>
         </div>
       </div>
       <MapContainer center={location} zoom={13} style={{ height: "100vh", width: "100%" }}>

@@ -13,7 +13,7 @@ const StyledUserAvatar = styled.div`
 const Heading = styled.h3`
   font-size: 1.7rem;
   font-weight: 600;
-  color: var(--color-grey-100);
+  color: black;
   margin-top: 3px;
 `;
 

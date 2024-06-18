@@ -4,9 +4,9 @@ import HeaderMenu from "./HeaderMenu";
 import UserAvatar from "./UserAvatar";
 
 const StyledHeader = styled.header`
-  background-color: var(--color-red-700);
+  background-color: #b91c1c; 
   padding: 1.2rem 3rem;
-  border-bottom: 1px solid var(--color-grey-100);
+  border-bottom: 1px solid #f3f4f6;
 
   display: flex;
   gap: 2.4rem;
