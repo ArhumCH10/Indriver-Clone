@@ -1,19 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './DriverStatusPage.css';
+import axios from 'axios'; 
+
 
 function DriverStatusPage() {
   const [drivers, setDrivers] = useState([]);
   const location = useLocation();
-
+  
   useEffect(() => {
     if (location.state && location.state.drivers) {
+      console.log(location.state.drivers);
       setDrivers(location.state.drivers);
     }
   }, [location.state]);
 
-  const handleAcceptRide = (driverId) => {
-    console.log(`Ride accepted for driver ID: ${driverId}`);
+  const handleAcceptRide = async (driverId,price) => {
+    try {
+      const userId = JSON.parse(localStorage.getItem('user'))._id;
+
+      const dataToSend = {
+        userId,
+        driverId,
+        price,
+        status:true,
+        pickUp: drivers[0].pickUp,
+        destination: drivers[0].destination,
+      };
+      console.log(dataToSend);
+
+      const response = await axios.post('http://localhost:8080/DriverRequest', dataToSend);
+      console.log('Accept ride response:', response.data);
+     
+    } catch (error) {
+      console.error('Error accepting ride:', error);
+     
+    }
   };
 
   const handleRejectRide = (driverId) => {
@@ -23,6 +45,9 @@ function DriverStatusPage() {
   return (
     <div className="driver-status-page">
       <h1>Available Drivers</h1>
+      <p><b> PickUp location</b> {drivers[0].pickUp}</p> <br/>
+      <p><b> Destination location</b> {drivers[0].destination}</p> <br/>
+
       <div className="drivers-list">
         {drivers.length === 0 ? (
           <p>No drivers available at the moment.</p>
@@ -42,7 +67,7 @@ function DriverStatusPage() {
                 </div>
               )}
               <div className="button-group">
-                <button onClick={() => handleAcceptRide(driver._id)} className="accept-button">Accept Ride</button>
+                <button onClick={() => handleAcceptRide(driver._id,driver.price.toFixed(2))} className="accept-button">Send Ride Request</button>
                 <button onClick={() => handleRejectRide(driver._id)} className="reject-button">Reject Ride</button>
               </div>
             </div>

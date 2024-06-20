@@ -202,7 +202,7 @@ const handleSearch = async () => {
     console.log('Fetching route and available drivers...');
     const coordinates = `${marker.lng},${marker.lat};${destinationMarker.lng},${destinationMarker.lat}`;
     const routeResponse = await axios.get(`https://us1.locationiq.com/v1/directions/driving/${coordinates}?key=${ACCESS_TOKEN}&overview=false&annotations=true`);
-    const distance = routeResponse.data.routes[0].distance; // Distance in meters
+    const distance = routeResponse.data.routes[0].distance; 
 
     const driversResponse = await axios.get('http://localhost:8080/user/active-drivers');
 
@@ -212,7 +212,9 @@ const handleSearch = async () => {
 
     const driversData = driversResponse.data.map(driver => ({
       ...driver,
-      price: (distance / 1000) * 2, // Example pricing calculation: $2 per km
+      price: (distance / 1000) * 2, 
+      pickUp,
+      destination,
     }));
 
     console.log('Drivers data:', driversData);
