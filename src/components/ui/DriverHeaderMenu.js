@@ -4,6 +4,7 @@ import ButtonIcon from "./ButtonIcon";
 import { HiOutlineUser } from "react-icons/hi2";
 import { HiOutlineBell } from 'react-icons/hi';
 import LogOut from "./LogOut";
+import { useNavigate } from 'react-router-dom';
 //import { useNavigate } from "react-router-dom";
 
 const StyledHeaderMenu = styled.ul`
@@ -14,9 +15,9 @@ const StyledHeaderMenu = styled.ul`
 `;
 
 export default function DriverHeaderMenu() {
-   // const navigate = useNavigate();
+   const navigate = useNavigate();
    const handleClick = () => {
-    console.log('Icon clicked!');
+    navigate("/profile-page-user")
   };
 
   return (
