@@ -33,6 +33,8 @@ console.log("This is user id :",userId)
           .then(response => response.json())
           .then(data => {
             setUserData(data);
+            setContactNumber(data.contactNumber);
+            setOtherInfo(data.otherInfo);
           })
           .catch(error => console.error('Error fetching user data:', error));
       };
@@ -46,9 +48,11 @@ console.log("This is user id :",userId)
   //   otherInfo: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
   // };
 
-  useEffect(() => {
-    setContactNumber(userData.contactNumber);
-}, [userData.contactNumber]);
+  
+// useEffect(() => {
+//   setContactNumber(userData.contactNumber);
+//   setOtherInfo(userData.otherInfo);
+// }, [userData]);
 
   const [contactNumber, setContactNumber] = useState(userData.contactNumber);
   const [otherInfo, setOtherInfo] = useState(userData.otherInfo);
@@ -72,6 +76,7 @@ console.log("This is user id :",userId)
   };
 
   const handleSavecontactNumberClick = () => {
+    console.log("function started")
     setIsEditingcontactNumber(false);
 
     // Update user data with the new contact number
@@ -79,9 +84,10 @@ console.log("This is user id :",userId)
       ...prevUserData,
       contactNumber: contactNumber
     }));
+    console.log(userData)
 
     // Send PUT request to backend to update contact number
-    fetch('http://localhost:8080/user/save-contactNumber-number', {
+    fetch('http://localhost:8080/user/save-phone-number', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -109,6 +115,34 @@ console.log("This is user id :",userId)
     setIsEditingOtherInfo(false);
     // Here you can update the user data with the new other information
     console.log(otherInfo);
+    // Update user data with the new contact number
+    setUserData(prevUserData => ({
+      ...prevUserData,
+      otherInfo: otherInfo
+    }));
+
+    // Send PUT request to backend to update contact number
+    fetch('http://localhost:8080/user/save-other-info', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userId: userData._id, otherInfo: otherInfo })
+    })
+    .then(response => {
+      if (!response.ok) {
+        toast.error('Failed to update other Info');
+
+        throw new Error('Failed to update Info');
+        
+      }
+      toast.success('Info updated successfully');
+    })
+    .catch(error => {
+      console.error('Error updating Info:', error);
+      toast.error('Failed to update Info');
+
+    });
   };
 
   const containerStyle = {
@@ -215,7 +249,7 @@ console.log("This is user id :",userId)
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                     <input
   type="text"
-  value={userData.contactNumber}
+  value={contactNumber} // Change this line
   onChange={handlecontactNumberChange}
   disabled={!isEditingcontactNumber}
   style={{ width: '30%', padding: '5px', border: 'none' }}
