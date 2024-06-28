@@ -1,40 +1,97 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './DriverStatusPage.css';
 import axios from 'axios'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingPage from './LoadingPage';
+import Modal from 'react-modal';
 
+Modal.setAppElement('#root');
 
 function DriverStatusPage() {
   const [drivers, setDrivers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [unpaidRequests, setUnpaidRequests] = useState({});
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [days, setDays] = useState('');
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const userId = JSON.parse(localStorage.getItem('user'))._id;
+
   useEffect(() => {
     if (location.state && location.state.drivers) {
-      console.log(location.state.drivers);
       setDrivers(location.state.drivers);
+      checkUnpaidRequests(location.state.drivers);
     }
   }, [location.state]);
 
-  const handleAcceptRide = async (driverId,price) => {
+  const checkUnpaidRequests = async (drivers) => {
     try {
-      const userId = JSON.parse(localStorage.getItem('user'))._id;
+      const promises = drivers.map(driver =>
+        axios.post('http://localhost:8080/checkRequest', { userId, driverId: driver._id })
+      );
+      const results = await Promise.all(promises);
+      const unpaidRequestsMap = results.reduce((acc, result, index) => {
+        acc[drivers[index]._id] = result.data.hasUnpaidRequest;
+        return acc;
+      }, {});
 
+      setUnpaidRequests(unpaidRequestsMap);
+    } catch (error) {
+      console.error('Error checking unpaid requests:', error);
+    }
+  };
+
+  const openModal = (driver) => {
+    setSelectedDriver(driver);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setDays('');
+  };
+
+  const handleDaysChange = (e) => {
+    setDays(e.target.value);
+  };
+
+  const handleRequest = () => {
+    if (!days) {
+      toast.error('Please enter the number of days.');
+      return;
+    }
+    const price = selectedDriver.price * days;
+    handleAcceptRide(selectedDriver._id, price, days);
+    closeModal();
+  };
+
+  const handleAcceptRide = async (driverId, price, days) => {
+    if (unpaidRequests[driverId]) {
+      toast.info('You have an unpaid request with this driver. Please settle the previous booking first.');
+      return;
+    }
+
+    try {
+      setLoading(true);
       const dataToSend = {
         userId,
         driverId,
-        price,
-        status:true,
-        pickUp: drivers[0].pickUp,
-        destination: drivers[0].destination,
+        status: true,
+        pickUp: drivers[0]?.pickUp,
+        destination: drivers[0]?.destination,
+        days,
       };
-      console.log(dataToSend);
 
-      const response = await axios.post('http://localhost:8080/DriverRequest', dataToSend);
-      console.log('Accept ride response:', response.data);
-     
+      await axios.post('http://localhost:8080/DriverRequest', dataToSend);
+      toast.success('Request Sent Successfully!!');
+      navigate('/userdashboard/reserve', { state: { userId } });
     } catch (error) {
       console.error('Error accepting ride:', error);
-     
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,38 +99,75 @@ function DriverStatusPage() {
     console.log(`Ride rejected for driver ID: ${driverId}`);
   };
 
+  const handleGoToReserve = () => {
+    navigate('/userdashboard/reserve', { state: { userId } });
+  };
+
+  const handleDisabledClick = () => {
+    toast.info('You have an unpaid request with this driver.');
+  };
+
   return (
     <div className="driver-status-page">
-      <h1>Available Drivers</h1>
-      <p><b> PickUp location</b> {drivers[0].pickUp}</p> <br/>
-      <p><b> Destination location</b> {drivers[0].destination}</p> <br/>
+      <ToastContainer />
+      {loading ? (
+        <LoadingPage />
+      ) : (
+        <>
+          <h1>Available Car Owners</h1>
+          {drivers.length > 0 && (
+            <>
+              <p><b>PickUp location:</b> {drivers[0].pickUp}</p> <br/>
+              <p><b>Destination location:</b> {drivers[0].destination}</p> <br/>
+            </>
+          )}
 
-      <div className="drivers-list">
-        {drivers.length === 0 ? (
-          <p>No drivers available at the moment.</p>
-        ) : (
-          drivers.map((driver) => (
-            <div key={driver._id} className="driver-card">
-              <h2>{driver.name}</h2>
-              <p><strong>Email:</strong> {driver.email}</p>
-              <p><strong>Latitude:</strong> {driver.latitude}</p>
-              <p><strong>Longitude:</strong> {driver.longitude}</p>
-              {driver.vehicleId && (
-                <div className="vehicle-info">
-                  <p><strong>Vehicle Type:</strong> {driver.vehicleId.type}</p>
-                  <p><strong>Vehicle Model:</strong> {driver.vehicleId.model}</p>
-                  <p><strong>License Plate:</strong> {driver.vehicleId.licensePlate}</p>
-                  <p><strong>Price:</strong> Rs{driver.price ? driver.price.toFixed(2) : 'N/A'}</p>
+          <div className="drivers-list">
+            {drivers.length === 0 ? (
+              <p>No Car Owners available at the moment.</p>
+            ) : (
+              drivers.map((driver) => (
+                <div key={driver._id} className="driver-card">
+                  <h2>{driver.name}</h2>
+                  <p><strong>Email:</strong> {driver.email}</p>
+                  <p><strong>Car Owner Address:</strong> {driver.address}</p>
+                  {driver.vehicleId && (
+                    <div className="vehicle-info">
+                      <p><strong>Vehicle Type:</strong> {driver.vehicleId.type}</p>
+                      <p><strong>Vehicle Model:</strong> {driver.vehicleId.model}</p>
+                      <p><strong>License Plate:</strong> {driver.vehicleId.licensePlate}</p>
+                    </div>
+                  )}
+                  <div className="button-group">
+                    <button 
+                      onClick={unpaidRequests[driver._id] ? handleDisabledClick : () => openModal(driver)} 
+                      className={`accept-button ${unpaidRequests[driver._id] ? 'disabled' : ''}`}
+                      disabled={unpaidRequests[driver._id]}
+                    >
+                      {unpaidRequests[driver._id] ? 'Request Sent' : 'Send Ride Request'}
+                    </button>
+                    <button onClick={() => handleRejectRide(driver._id)} className="reject-button">Reject Ride</button>
+                  </div>
                 </div>
-              )}
-              <div className="button-group">
-                <button onClick={() => handleAcceptRide(driver._id,driver.price.toFixed(2))} className="accept-button">Send Ride Request</button>
-                <button onClick={() => handleRejectRide(driver._id)} className="reject-button">Reject Ride</button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              ))
+            )}
+          </div>
+          <button onClick={handleGoToReserve} className="reserve-button">Go to Reserve Page</button>
+        </>
+      )}
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Enter Number of Days"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <h2>Enter Number of Days</h2>
+        <input type="number" value={days} onChange={handleDaysChange} placeholder="Number of days" />
+        <button onClick={handleRequest}>Send Request</button>
+        <button onClick={closeModal}>Close</button>
+      </Modal>
     </div>
   );
 }

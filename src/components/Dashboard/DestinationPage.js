@@ -5,6 +5,8 @@ import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./DestinationPage.css";
 import { FaLocationCrosshairs } from "react-icons/fa6";
 
@@ -193,11 +195,20 @@ const handleDestinationSuggestionSelect = (suggestion) => {
   setDestinationSuggestions([]);
 };
 
+
 const handleSearch = async () => {
   if (!marker || !destinationMarker) {
     alert('Please set both pick-up and destination locations.');
     return;
   }
+  const userString = localStorage.getItem('user');
+  if (!userString) {
+    toast.error('User is not authenticated');
+    return;
+  }
+
+  const user = JSON.parse(userString);
+  const userId = user._id;
   try {
     console.log('Fetching route and available drivers...');
     const coordinates = `${marker.lng},${marker.lat};${destinationMarker.lng},${destinationMarker.lat}`;
@@ -212,22 +223,31 @@ const handleSearch = async () => {
 
     const driversData = driversResponse.data.map(driver => ({
       ...driver,
-      price: (distance / 1000) * 2, 
+      price: (distance / 1000) * 50, 
       pickUp,
       destination,
     }));
 
     console.log('Drivers data:', driversData);
     setDrivers(driversData);
-    navigate('/driver-status', { state: { drivers: driversData } });
+
+    // Send user location and address to backend
+    await axios.post('http://localhost:8080/user-location', {
+      userId: userId, 
+      address: pickUp,
+      latitude: marker.lat,
+      longitude: marker.lng,
+    });
+
+    navigate('/userdashboard/driver-status', { state: { drivers: driversData } });
   } catch (error) {
     console.error('Error fetching available drivers:', error);
   }
 };
 
-
   return (
     <div>
+       <ToastContainer />
       <div className="destination-container">
         <div className="destination-header">
           <FaArrowLeft size={20} className="back-icon" onClick={handleBackClick} />
@@ -271,7 +291,7 @@ const handleSearch = async () => {
               )}
             </div>
           </div>
-          <button className='find-driver-btn' onClick={handleSearch}>Find Driver</button>
+          <button className='find-driver-btn' onClick={handleSearch}>Find Car Owners</button>
         </div>
       </div>
       <MapContainer center={location} zoom={13} style={{ height: "100vh", width: "100%" }}>

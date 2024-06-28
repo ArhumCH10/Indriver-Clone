@@ -1,119 +1,167 @@
-/* DriverDashboardPage.css */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .driver-dashboard {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .driver-dashboard h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .vehicle-form, .activation-section, .booking-requests {
-    margin-bottom: 30px;
-  }
-  
-  .vehicle-form h2, .activation-section h2, .booking-requests h2 {
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  .vehicle-form input, .activation-section button, .booking-request button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .vehicle-form input:focus, .activation-section button:focus, .booking-request button:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .add-vehicle-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    padding: 8px;
-    border-radius: 3px;
-  }
-  
-  .add-vehicle-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .status-button {
-    padding: 15px;
-    font-size: 18px;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .status-button.active {
-    background-color: #28a745;
-  }
-  
-  .status-button.inactive {
-    background-color: #dc3545;
-  }
-  
-  .booking-requests .booking-request {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-  
-  .booking-requests .booking-request p {
-    margin: 0;
-    flex: 1;
-  }
-  
-  .accept-button {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    margin-right: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .accept-button:hover {
-    background-color: #218838;
-  }
-  
-  .reject-button {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .reject-button:hover {
-    background-color: #c82333;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+.section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.vehicle-form-section {
+  background-color: #e8f4ff;
+}
+
+.activation-section {
+  background-color: #e8ffe8;
+}
+
+.booking-requests-section {
+  background-color: #ffe8e8;
+}
+
+.vehicle-form-section h2,
+.activation-section h2,
+.booking-requests-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.vehicle-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.vehicle-inputs input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vehicle-inputs input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.add-vehicle-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.add-vehicle-button:hover {
+  background-color: #0056b3;
+}
+
+.status-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.status-button.active {
+  background-color: #28a745;
+}
+
+.status-button.inactive {
+  background-color: #dc3545;
+}
+
+.location-info {
+  text-align: center;
+}
+
+.booking-request {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.request-details {
+  margin-bottom: 10px;
+}
+
+.button-group button {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.accept-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.reject-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.propose-button {
+  background-color: #ffc107;
+  color: black;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
