@@ -1,6 +1,5 @@
-// Services.js
 import React from 'react';
-import { FaCar, FaWrench, FaSearch, FaBicycle, FaRegCalendarAlt, FaSuitcase, FaHome, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaWrench, FaSearch, FaRegCalendarAlt, FaHome, FaMapMarkerAlt } from 'react-icons/fa';
 import './Services.css';
 import { useNavigate } from 'react-router-dom';
 import { MdElectricRickshaw } from 'react-icons/md';
@@ -16,32 +15,18 @@ const Services = () => {
     navigate('/userdashboard/reserve');
   };
 
+  const handleMechanicClick = () => {
+    navigate('/userdashboard/findMechanic');
+  };
+
   return (
     <div className="services-container">
       <div className="services-section">
-        <div className="service-card">
-          <FaCar size={50} />
-          <p>Ride</p>
-        </div>
-        <div className="service-card">
-          <FaCar size={50} />
-          <p>Ride Mini</p>
-        </div>
-      </div>
-      <div className="services-section">
-        <div className="service-card">
-          <FaBicycle size={50} />
-          <p>2 Wheels</p>
-        </div>
-        <div className="service-card">
-          <MdElectricRickshaw size={50} />
-          <p>Rickshaw</p>
-        </div>
         <div className="service-card" onClick={handleReserveClick}>
           <FaRegCalendarAlt size={50} />
           <p>Reserve</p>
         </div>
-        <div className="service-card">
+        <div className="service-card" onClick={handleMechanicClick}>
           <FaWrench size={50} />
           <p>Mechanic</p>
         </div>

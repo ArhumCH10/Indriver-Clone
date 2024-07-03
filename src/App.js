@@ -15,6 +15,8 @@ import ProfilePageUser from './components/Dashboard/ProfilePageUser';
 import DriverStatusPage from './components/DashboardDriver/DriverStatusPage';
 import Reserve from './components/Dashboard/Reserve';
 import PostMap from './components/Dashboard/MapComponent';
+import FindMechanicPage from './components/Dashboard/FindMechanicPage';
+import ActiveMechanicsPage from './components/Dashboard/ActiveMechanicsPage';
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/userdashboard/findMechanic" element={<FindMechanicPage />} />
+        <Route path="/active-mechanics" element={<ActiveMechanicsPage />} />
+
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
           <Route path="dashboard/*" index element={<UserDashboardPage />} />
           <Route path="destination" element={<DestinationPage/>} />

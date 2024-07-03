@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MechanicDashboardPage.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,61 +13,100 @@ function MechanicDashboardPage() {
     { id: 3, details: 'Oil change for Ford F-150' }
   ]);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        toast.error('User is not authenticated');
+        return;
+      }
+
+      const user = JSON.parse(userString);
+      const userId = user._id;
+
+      try {
+        const response = await axios.get(`http://localhost:8080/user/${userId}`);
+        if (response.status === 200) {
+          setMechanic(response.data);
+        }
+      } catch (error) {
+        toast.error('Error fetching user data: ' + (error.response?.data?.error || error.message));
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleMechanicChange = (e) => {
     const { name, value } = e.target;
     setMechanic({ ...mechanic, [name]: value });
   };
 
-  const handleAddMechanic =async () => {
+  const handleAddMechanic = async () => {
     const userString = localStorage.getItem('user');
     if (!userString) {
       toast.error('User is not authenticated');
       return;
     }
-    
+
     const user = JSON.parse(userString);
     const userId = user._id;
     console.log('Mechanic details:', mechanic);
     try {
-      const { name, expertise, experience,contactNumber } = mechanic;
+      const { name, expertise, experience, contactNumber } = mechanic;
       if (!name || !expertise || !experience || !contactNumber) {
         toast.error('Please fill in all fields');
         return;
       }
       const response = await axios.post(`http://localhost:8080/user/add-mechanic`, null, {
-        params: { userId,name, expertise, experience,contactNumber }
+        params: { userId, name, expertise, experience, contactNumber }
       });
       if (response.status === 200) {
         toast.success('Mechanic added successfully!');
-        setMechanic({ name: '', expertise: '', experience: '',contactNumber:'' }); // Reset the form
       }
     } catch (error) {
       toast.error('Error adding mechanic: ' + (error.response?.data?.error || error.message));
     }
   };
-  
 
   const handleActivate = async () => {
     try {
       const userString = localStorage.getItem('user');
-if (!userString) {
-  toast.error('User is not authenticated');
-  return;
-}
+      if (!userString) {
+        toast.error('User is not authenticated');
+        return;
+      }
 
-const user = JSON.parse(userString);
-const userId = user._id;
+      const { name, expertise, experience, contactNumber } = mechanic;
+      if (!name || !expertise || !experience || !contactNumber) {
+        toast.error('Please fill in all fields');
+        return;
+      }
 
-      const response = await axios.post('http://localhost:8080/user/toggle-active', { userId });
+      const user = JSON.parse(userString);
+      const userId = user._id;
+
+      const response = await axios.post('http://localhost:8080/toggle-active', { userId });
 
       if (response.status === 200) {
-        setIsActive(prevState => !prevState);
-        toast(response.data.message);
+        setIsActive(!isActive);
+        toast.success(response.data.message);
       }
+
     } catch (error) {
+      if (error.response) {
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error request data:', error.request);
+      } else {
+        console.error('General Error message:', error.message);
+      }
       toast.error('Error toggling status: ' + (error.response?.data?.error || error.message));
     }
   };
+
   const handleRequestResponse = (requestId, response) => {
     // Handle request response (this would involve an API call in a real app)
     setRequests(requests.filter(request => request.id !== requestId));
@@ -80,7 +119,7 @@ const userId = user._id;
       <ToastContainer />
 
       <div className="mechanic-form">
-        <h2>Add Mechanic</h2>
+        <h2>Details</h2>
         <input
           type="text"
           name="name"
@@ -109,13 +148,13 @@ const userId = user._id;
           value={mechanic.contactNumber}
           onChange={handleMechanicChange}
         />
-        <button onClick={handleAddMechanic} className="add-mechanic-button">Add Mechanic</button>
+        <button onClick={handleAddMechanic} className="add-mechanic-button">Update Details</button>
       </div>
 
       <div className="activation-section">
         <h2>Mechanic Status</h2>
         <button onClick={handleActivate} className={`status-button ${isActive ? 'active' : 'inactive'}`}>
-          {isActive ? 'Deactive' : 'Activate'}
+          {isActive ? 'Deactivate' : 'Activate'}
         </button>
       </div>
 
