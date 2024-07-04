@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import HeaderUser from '../ui/HeaderUser';
-import Modal from './Modal'; // Assuming you have a Modal component
-import { FaSpinner } from 'react-icons/fa'; // For loading spinner
+import { FaSpinner } from 'react-icons/fa';
+import { Modal, Box, Button, Typography, TextField } from '@mui/material';
+import 'bootstrap/dist/css/bootstrap.min.css'; // If you still need Bootstrap for other styling
+
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const ActiveMechanicsPage = () => {
     const [mechanics, setMechanics] = useState([]);
@@ -40,25 +53,18 @@ const ActiveMechanicsPage = () => {
     }, []);
 
     const handleAcceptMechanic = (mechanic) => {
-        console.log("accept mechanic activated")
-        console.log(mechanic)
         setSelectedMechanic(mechanic);
-        console.log(selectedMechanic)
-
+        setProblemDescription('');
         setModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setModalOpen(false);
-        setRequestSubmitted(false);
-        // setSelectedMechanic(null);
-        // setProblemDescription('');
     };
 
     const handleSubmitRequest = async () => {
         try {
             setLoading(true);
-            console.log("submit request activated")
 
             const userString = localStorage.getItem('user');
             if (!userString) {
@@ -75,13 +81,13 @@ const ActiveMechanicsPage = () => {
                 requestDateTime: new Date().toISOString()
             };
 
-            // Log selectedMechanic here before submission
+            console.log("submit request activated", requestData);
 
             await axios.post('http://localhost:8080/submit-request', requestData);
             console.log(requestData);
-            setRequestSubmitted(true); // Set requestSubmitted to true after successful request submission
-            // setSelectedMechanic(null);
+            setRequestSubmitted(true);
 
+            handleCloseModal();
         } catch (error) {
             console.error('Error submitting request:', error);
         } finally {
@@ -99,51 +105,44 @@ const ActiveMechanicsPage = () => {
         }
     };
 
-
-
     return (
         <div>
-                                <HeaderUser />
+            <HeaderUser />
 
             {requestSubmitted ? (
-                <>
-                    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
-                        <h1 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Waiting for Mechanic Response</h1>
-                        <div style={{ border: '1px solid #ccc', borderRadius: '1em', marginBottom: '10px', padding: '15px' }}>
-                            {selectedMechanic && (
-                                <>
-                                    <h2 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{selectedMechanic?.name}</h2>
-                                    <p><strong>Email:</strong> {selectedMechanic?.email}</p>
-                                    <p><strong>Contact Number:</strong> {selectedMechanic?.contactNumber}</p>
-                                    <p><strong>Experience:</strong> {selectedMechanic?.experience}</p>
-                                    <p><strong>Expertise:</strong> {selectedMechanic?.expertise}</p>
-                                    <p><strong>Problem Description:</strong> 
-                                    {problemDescription && problemDescription}
-                                    </p>
-                                </>
-
-                            )}
-                            <p style={{ textAlign: 'center', marginTop: '20px' }}>Waiting for the mechanic to respond...</p>
-                            <button
-                                onClick={handleCloseModal}
-                                style={{
-                                    padding: '8px 16px',
-                                    fontSize: '14px',
-                                    backgroundColor: '#dc3545',
-                                    color: '#fff',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                    display: 'block',
-                                    margin: '0 auto'
-                                }}
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
+                    <h1 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Waiting for Mechanic Response</h1>
+                    <div style={{ border: '1px solid #ccc', borderRadius: '1em', marginBottom: '10px', padding: '15px' }}>
+                        {selectedMechanic && (
+                            <>
+                                <h2 style={{ fontSize: '1.5em', marginBottom: '5px' }}>{selectedMechanic?.name}</h2>
+                                <p><strong>Email:</strong> {selectedMechanic?.email}</p>
+                                <p><strong>Contact Number:</strong> {selectedMechanic?.contactNumber}</p>
+                                <p><strong>Experience:</strong> {selectedMechanic?.experience}</p>
+                                <p><strong>Expertise:</strong> {selectedMechanic?.expertise}</p>
+                                <p><strong>Problem Description:</strong> {problemDescription && problemDescription}</p>
+                            </>
+                        )}
+                        <p style={{ textAlign: 'center', marginTop: '20px' }}>Waiting for the mechanic to respond...</p>
+                        <button
+                            onClick={() => setRequestSubmitted(false)}
+                            style={{
+                                padding: '8px 16px',
+                                fontSize: '14px',
+                                backgroundColor: '#dc3545',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                display: 'block',
+                                margin: '0 auto'
+                            }}
+                        >
+                            Cancel
+                        </button>
                     </div>
-                </>
-            ) : (<>
+                </div>
+            ) : (
                 <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
                     <h1 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Active Mechanics</h1>
                     <ul style={{ listStyleType: 'none', padding: 0 }}>
@@ -208,10 +207,39 @@ const ActiveMechanicsPage = () => {
                         ))}
                     </ul>
                 </div>
-                <Modal isOpen={modalOpen} setProblemDescription={setProblemDescription} onClose={handleCloseModal} onSubmit={handleSubmitRequest} />
-                    
-            </>)
-            }
+            )}
+
+            <Modal
+                open={modalOpen}
+                onClose={handleCloseModal}
+                aria-labelledby="problem-modal-title"
+                aria-describedby="problem-modal-description"
+            >
+                <Box sx={modalStyle}>
+                    <Typography id="problem-modal-title" variant="h6" component="h2">
+                        Enter Problem Description
+                    </Typography>
+                    <TextField
+                        id="problem-modal-description"
+                        label="Describe the problem..."
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        fullWidth
+                        value={problemDescription}
+                        onChange={(e) => setProblemDescription(e.target.value)}
+                        margin="normal"
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button onClick={handleSubmitRequest} variant="contained" color="primary" sx={{ mr: 1 }}>
+                            Send Request
+                        </Button>
+                        <Button onClick={handleCloseModal} variant="contained" color="error">
+                            Cancel
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
         </div>
     );
 };
