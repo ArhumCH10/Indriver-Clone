@@ -18,6 +18,8 @@ import Reserve from './components/Dashboard/Reserve';
 import PostMap from './components/Dashboard/MapComponent';
 import FindMechanicPage from './components/Dashboard/FindMechanicPage';
 import ActiveMechanicsPage from './components/Dashboard/ActiveMechanicsPage';
+import AdminLogin from './components/AdminDashboard/AdminLogin';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 
 function App() {
   return (
@@ -29,6 +31,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/userdashboard/findMechanic" element={<FindMechanicPage />} />
         <Route path="/active-mechanics" element={<ActiveMechanicsPage />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+
 
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
           <Route path="dashboard/*" index element={<UserDashboardPage />} />
