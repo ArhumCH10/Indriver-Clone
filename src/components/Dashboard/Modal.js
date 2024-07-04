@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
-const Modal = ({ isOpen, onClose, onSubmit }) => {
+const Modal = ({ isOpen, onClose, setProblemDescription,onSubmit }) => {
   const [problem, setProblem] = useState('');
 
   const handleSubmit = () => {
-    onSubmit(problem);
-    setProblem('');
+    onSubmit();
+    setProblemDescription(problem);
+    // setProblem('');
     onClose();
   };
 
