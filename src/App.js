@@ -5,7 +5,6 @@ import SignupPage from './components/pages/signupPage'; // Corrected component n
 import LoginPage from './components/pages/loginPage';
 
 import UserDashboardPage from './components/Dashboard/userDashboardPage';
-import GlobalStyle from './components/styles/GlobalStyle';
 import DriverDashboardPage from './components/DashboardDriver/DriverDashboardPage';
 import UserDashboardLinks from './components/Dashboard/UserDashboardLinks';
 import DriverDashboardLinks from './components/DashboardDriver/DriverDashboardLinks';
@@ -19,6 +18,8 @@ import PostMap from './components/Dashboard/MapComponent';
 import FindMechanicPage from './components/Dashboard/FindMechanicPage';
 import ActiveMechanicsPage from './components/Dashboard/ActiveMechanicsPage';
 import WaitingPage from './components/Dashboard/WaitingPage';
+import AdminLogin from './components/AdminDashboard/AdminLogin';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 
 function App() {
   return (
@@ -30,7 +31,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/userdashboard/findMechanic" element={<FindMechanicPage />} />
         <Route path="/active-mechanics" element={<ActiveMechanicsPage />} />
-        <Route path="/waiting" element={<WaitingPage/>} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+
+
 
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
           <Route path="dashboard/*" index element={<UserDashboardPage />} />
