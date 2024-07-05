@@ -18,6 +18,7 @@ import Reserve from './components/Dashboard/Reserve';
 import PostMap from './components/Dashboard/MapComponent';
 import FindMechanicPage from './components/Dashboard/FindMechanicPage';
 import ActiveMechanicsPage from './components/Dashboard/ActiveMechanicsPage';
+import WaitingPage from './components/Dashboard/WaitingPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/userdashboard/findMechanic" element={<FindMechanicPage />} />
         <Route path="/active-mechanics" element={<ActiveMechanicsPage />} />
+        <Route path="/waiting" element={<WaitingPage/>} />
 
         <Route path="/userdashboard" element={<UserDashboardLinks />}>
           <Route path="dashboard/*" index element={<UserDashboardPage />} />

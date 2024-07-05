@@ -113,4 +113,26 @@ body {
   .reject-button:hover {
     background-color: #c82333;
   }
-  
+
+  .price-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.submit-button, .cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cancel-button {
+    background-color: #f44336;
+    color: white;
+}

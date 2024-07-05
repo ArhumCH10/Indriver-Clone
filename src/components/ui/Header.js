@@ -32,18 +32,6 @@ function Header() {
               <Link to="/" style={linkStyle}>Home</Link>
             </li>
             <li style={navbarItemStyle}>
-              <Link to="/about" style={linkStyle}>About</Link>
-            </li>
-            <li style={navbarItemStyle}>
-              <Link to="/services" style={linkStyle}>Services</Link>
-            </li>
-            <li style={navbarItemStyle}>
-              <Link to="/projects" style={linkStyle}>Projects</Link>
-            </li>
-            <li style={navbarItemStyle}>
-              <Link to="/contact" style={linkStyle}>Contact</Link>
-            </li>
-            <li style={navbarItemStyle}>
               <Link to="/login" style={linkStyle}>Login</Link>
             </li>
             <li style={navbarItemStyle}>
