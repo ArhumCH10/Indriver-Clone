@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/style.css';
 
 function ServiceCard({ imgSrc, title, description }) {
   return (
@@ -17,19 +18,17 @@ function ServiceCard({ imgSrc, title, description }) {
 
 function Services() {
   const services = [
-    { imgSrc: "./assets/images/services-1.png", title: "Engine Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
-    
-    { imgSrc: "./assets/images/services-2.png", title: "Brake Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
-    { imgSrc: "./assets/images/services-3.png", title: "Tire Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
-    { imgSrc: "./assets/images/services-4.png", title: "Battery Repair", description: "Autem velaum iure reare aenderit rui in ea roluptate esse ruam moles" },
-    
+    { imgSrc: "./assets/images/services-1.png", title: "Engine Repair", description: "We offer comprehensive engine repair services to keep your vehicle running smoothly." },
+    { imgSrc: "./assets/images/services-2.png", title: "Brake Repair", description: "Our expert technicians provide top-quality brake repair services for your safety." },
+    { imgSrc: "./assets/images/services-3.png", title: "Tire Repair", description: "Professional tire repair services to ensure your vehicle's optimal performance." },
+    { imgSrc: "./assets/images/services-4.png", title: "Battery Repair", description: "Reliable battery repair services to keep your vehicle powered up." },
   ];
 
   return (
     <section className="section service has-bg-image" aria-labelledby="service-label" style={{ backgroundImage: "url('./assets/images/service-bg.jpg')" }}>
       <div className="container">
         <p className="section-subtitle :light" id="service-label">Our services</p>
-        <h2 className="h2 section-title">We Provide Great Services For your Vehicle</h2>
+        <h2 className="h2 section-title">We Provide Great Services For Your Vehicle</h2>
         <ul className="service-list">
           {services.map(service => (
             <ServiceCard key={service.title} {...service} />

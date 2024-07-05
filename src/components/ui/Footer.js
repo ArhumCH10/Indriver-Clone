@@ -10,7 +10,7 @@ function Footer() {
               <img src="./assets/images/Logo.png" width="128" height="63" alt="autofix home" />
             </a>
             <p className="footer-text">
-              Rerum necessitatibus saepe eveniet aut et voluptates repudiandae sint et molestiae non recusandae.
+            We provide excellent service and ensure customer satisfaction. Our team is dedicated to delivering top-notch auto maintenance and car booking services.
             </p>
             <ul className="social-list">
               {[
@@ -67,7 +67,7 @@ function Footer() {
 
       <div className="footer-bottom">
         <div className="container">
-          <p className="copyright">Copyright 2022, codewithsadee All Rights Reserved.</p>
+          <p className="copyright">Copyright 2024,  All Rights Reserved.</p>
           <img src="./assets/images/footer-shape-2.png" width="778" height="335" loading="lazy" alt="Shape" className="shape shape-2" />
           <img src="./assets/images/footer-shape-1.png" width="805" height="652" loading="lazy" alt="Red Car" className="shape shape-1 move-anim" />
         </div>
