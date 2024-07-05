@@ -5,15 +5,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingPage from './LoadingPage';
-import Modal from 'react-modal';
-
-Modal.setAppElement('#root');
 
 function DriverStatusPage() {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [unpaidRequests, setUnpaidRequests] = useState({});
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [days, setDays] = useState('');
   const location = useLocation();
@@ -44,28 +40,17 @@ function DriverStatusPage() {
     }
   };
 
-  const openModal = (driver) => {
-    setSelectedDriver(driver);
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setDays('');
-  };
-
   const handleDaysChange = (e) => {
     setDays(e.target.value);
   };
 
-  const handleRequest = () => {
+  const handleRequest = (driver) => {
     if (!days) {
       toast.error('Please enter the number of days.');
       return;
     }
-    const price = selectedDriver.price * days;
-    handleAcceptRide(selectedDriver._id, price, days);
-    closeModal();
+    const price = driver.price * days;
+    handleAcceptRide(driver._id, price, days);
   };
 
   const handleAcceptRide = async (driverId, price, days) => {
@@ -140,7 +125,7 @@ function DriverStatusPage() {
                   )}
                   <div className="button-group">
                     <button 
-                      onClick={unpaidRequests[driver._id] ? handleDisabledClick : () => openModal(driver)} 
+                      onClick={unpaidRequests[driver._id] ? handleDisabledClick : () => setSelectedDriver(driver)} 
                       className={`accept-button ${unpaidRequests[driver._id] ? 'disabled' : ''}`}
                       disabled={unpaidRequests[driver._id]}
                     >
@@ -148,6 +133,13 @@ function DriverStatusPage() {
                     </button>
                     <button onClick={() => handleRejectRide(driver._id)} className="reject-button">Reject Ride</button>
                   </div>
+                  {selectedDriver && selectedDriver._id === driver._id && (
+                    <div className="request-form">
+                      <h3>Enter Number of Days</h3>
+                      <input type="number" value={days} onChange={handleDaysChange} placeholder="Number of days" />
+                      <button onClick={() => handleRequest(driver)}>Send Request</button>
+                    </div>
+                  )}
                 </div>
               ))
             )}
@@ -155,19 +147,6 @@ function DriverStatusPage() {
           <button onClick={handleGoToReserve} className="reserve-button">Go to Reserve Page</button>
         </>
       )}
-
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Enter Number of Days"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2>Enter Number of Days</h2>
-        <input type="number" value={days} onChange={handleDaysChange} placeholder="Number of days" />
-        <button onClick={handleRequest}>Send Request</button>
-        <button onClick={closeModal}>Close</button>
-      </Modal>
     </div>
   );
 }

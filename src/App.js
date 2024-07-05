@@ -33,6 +33,7 @@ function App() {
         <Route path="/active-mechanics" element={<ActiveMechanicsPage />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/waiting" element={<WaitingPage/>} />
 
 
 

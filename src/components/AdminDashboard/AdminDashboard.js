@@ -4,8 +4,8 @@ import { Divider } from '@material-ui/core';
 
 function AdminDashboard() {
     const [users, setUsers] = useState([]);
-    const [mechanic, setMechanic] = useState([]);
-    const [driver, setDriver] = useState([]);
+    const [mechanics, setMechanics] = useState([]);
+    const [drivers, setDrivers] = useState([]);
     const [activeButton, setActiveButton] = useState('user');
     const [updateTrigger, setUpdateTrigger] = useState(false);
     const navigate = useNavigate();
@@ -39,7 +39,7 @@ function AdminDashboard() {
         try {
             const response = await fetch('http://localhost:8080/get-mechanics');
             const data = await response.json();
-            setMechanic(data);
+            setMechanics(data);
         } catch (error) {
             console.error('Error fetching mechanics:', error);
         }
@@ -53,7 +53,7 @@ function AdminDashboard() {
         try {
             const response = await fetch('http://localhost:8080/get-drivers');
             const data = await response.json();
-            setDriver(data);
+            setDrivers(data);
         } catch (error) {
             console.error('Error fetching drivers:', error);
         }
@@ -77,6 +77,17 @@ function AdminDashboard() {
             setUpdateTrigger(prev => !prev); // Trigger re-fetch on verification
         } catch (error) {
             console.error('Error verifying user:', error);
+        }
+    };
+
+    const handleDelete = async (userId, userType) => {
+        try {
+            await fetch(`http://localhost:8080/delete-user/${userId}`, {
+                method: 'DELETE'
+            });
+            setUpdateTrigger(prev => !prev); // Trigger re-fetch on delete
+        } catch (error) {
+            console.error(`Error deleting ${userType}:`, error);
         }
     };
 
@@ -155,6 +166,12 @@ function AdminDashboard() {
                                                     Verified
                                                 </button>
                                             )}
+                                            <button
+                                                style={styles.deleteButton}
+                                                onClick={() => handleDelete(user._id, 'user')}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -177,7 +194,7 @@ function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {mechanic.map((user, index) => (
+                                {mechanics.map((user, index) => (
                                     <tr key={user._id}>
                                         <td>{index + 1}</td>
                                         <td>{user.name}</td>
@@ -203,6 +220,12 @@ function AdminDashboard() {
                                                     Verified
                                                 </button>
                                             )}
+                                            <button
+                                                style={styles.deleteButton}
+                                                onClick={() => handleDelete(user._id, 'mechanic')}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -222,7 +245,7 @@ function AdminDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {driver.map((user, index) => (
+                                {drivers.map((user, index) => (
                                     <tr key={user._id}>
                                         <td>{index + 1}</td>
                                         <td>{user.name}</td>
@@ -245,6 +268,12 @@ function AdminDashboard() {
                                                     Verified
                                                 </button>
                                             )}
+                                            <button
+                                                style={styles.deleteButton}
+                                                onClick={() => handleDelete(user._id, 'driver')}
+                                            >
+                                                Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -284,8 +313,6 @@ const styles = {
         cursor: 'pointer'
     },
     userTypeButton: {
-        backgroundColor: '#5BA600',
-        color: 'black',
         padding: '0.5rem 1rem',
         border: 'none',
         borderRadius: '4px',
@@ -295,50 +322,40 @@ const styles = {
         padding: '1rem'
     },
     tableContainer: {
-        backgroundColor: '#fff',
+        marginTop: '1rem',
+        backgroundColor: '#f4f4f4',
         padding: '1rem',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+        borderRadius: '4px'
     },
     table: {
         width: '100%',
-        borderCollapse: 'collapse',
-        marginTop: '30px'
-    },
-    th: {
-        backgroundColor: '#f4f4f4',
-        padding: '0.5rem',
-        textAlign: 'left',
-        borderBottom: '1px solid #ddd'
-    },
-    td: {
-        padding: '0.5rem',
-        borderBottom: '1px solid #ddd'
-    },
-    actionButton: {
-        marginRight: '0.5rem',
-        padding: '0.25rem 0.5rem',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer'
+        borderCollapse: 'collapse'
     },
     verifyButton: {
         backgroundColor: '#5BA600',
-        color: 'white',
+        color: '#fff',
+        padding: '0.5rem 1rem',
         border: 'none',
         borderRadius: '4px',
-        padding: '0.25rem 0.5rem',
         cursor: 'pointer',
-        margin: '10px 0'
+        marginRight: '0.5rem'
     },
     verifiedButton: {
-        backgroundColor: 'yellow',
-        color: 'black',
+        backgroundColor: '#ccc',
+        color: '#fff',
+        padding: '0.5rem 1rem',
         border: 'none',
         borderRadius: '4px',
-        padding: '0.25rem 0.5rem',
-        cursor: 'pointer',
-        margin: '10px 0'
+        cursor: 'not-allowed',
+        marginRight: '0.5rem'
+    },
+    deleteButton: {
+        backgroundColor: '#f44336',
+        color: '#fff',
+        padding: '0.5rem 1rem',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer'
     }
 };
 

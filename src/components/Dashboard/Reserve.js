@@ -9,6 +9,7 @@ const Reserve = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [driverResponses, setDriverResponses] = useState([]);
+  const [id, setId] = useState();
 
   useEffect(() => {
     const fetchSentRequests = async () => {
@@ -18,6 +19,7 @@ const Reserve = () => {
         return;
       }
 
+      setId(userId);
       try {
         const response = await axios.post('http://localhost:8080/getSentRequests', { userId });
         setDriverResponses(response.data);
@@ -26,15 +28,45 @@ const Reserve = () => {
       }
     };
 
-    fetchSentRequests();
+    if (location.state) {
+      fetchSentRequests();
+    } else {
+      console.error('Location state is null or undefined');
+    }
   }, [location.state]);
 
   useEffect(() => {
-    const acceptedRequest = driverResponses.find(request => request.status === 'accepted');
-    if (acceptedRequest) {
-      navigate('/userdashboard/map', { state: { bookingId: acceptedRequest._id, userId: location.state.userId, driverId: acceptedRequest.driverId._id } });
+    const fetchAcceptedStatus = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/bookingRequest/status/${id}`);
+        if (response.data.accepted) {
+          const acceptedRequest = response.data.booking;
+          navigate('/userdashboard/map', { 
+            state: { 
+              bookingId: acceptedRequest._id, 
+              userId: location.state.userId, 
+              driverId: acceptedRequest.driverId 
+            } 
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching accepted status:', error);
+      }
+    };
+
+    if (location.state) {
+      fetchAcceptedStatus();
     }
-  }, [driverResponses, navigate, location.state.userId]);
+  }, [location.state, navigate]);
+
+  useEffect(() => {
+    if (location.state) {
+      const acceptedRequest = driverResponses.find(request => request.status === 'accepted');
+      if (acceptedRequest) {
+        navigate('/userdashboard/map', { state: { bookingId: acceptedRequest._id, userId: location.state.userId, driverId: acceptedRequest.driverId._id } });
+      }
+    }
+  }, [driverResponses, navigate, location.state]);
 
   const handleResponse = async (requestId, status, newPrice = null) => {
     try {

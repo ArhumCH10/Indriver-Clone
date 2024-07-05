@@ -3,7 +3,6 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './DriverDashboardPage.css';
-import ReactModal from 'react-modal';
 
 const ACCESS_TOKEN = 'pk.c3869e335c8c12695c653d2da61c24ff';
 
@@ -14,13 +13,11 @@ function DriverDashboardPage() {
   const [bookingRequests, setBookingRequests] = useState([]);
   const [driverLocation, setDriverLocation] = useState(null);
   const [address, setAddress] = useState('');
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [acceptedBooking, setAcceptedBooking] = useState(null);
   const [accepted, setAccepted] = useState(false);
-  const [paymentModal, setPaymentModal] = useState(false);
   const [paid, setPaid] = useState(false);
-  const [shownAcceptedModal, setShownAcceptedModal] = useState(false);
-  const [shownPaymentModal, setShownPaymentModal] = useState(false);
+  const [shownAcceptedAlert, setShownAcceptedAlert] = useState(false);
+  const [shownPaymentAlert, setShownPaymentAlert] = useState(false);
 
   useEffect(() => {
     const fetchDriverData = async () => {
@@ -259,29 +256,14 @@ function DriverDashboardPage() {
   }, []);
 
   useEffect(() => {
-    if (accepted && !paid && !shownAcceptedModal) {
-      setModalIsOpen(true);
-      setShownAcceptedModal(true); // Mark accepted modal as shown
-    } else if (accepted && paid && !shownPaymentModal) {
-      setModalIsOpen(false);
-      setPaymentModal(true);
-      setShownPaymentModal(true); // Mark payment modal as shown
+    if (accepted && !paid && !shownAcceptedAlert) {
+      alert('Congratulations! Booking accepted successfully. User will pick up this car from your location and deliver it after ' + acceptedBooking.days + ' days. You will get Rs ' + acceptedBooking.price + '/- as cash');
+      setShownAcceptedAlert(true); // Mark accepted alert as shown
+    } else if (accepted && paid && !shownPaymentAlert) {
+      alert('Payment received successfully!');
+      setShownPaymentAlert(true); // Mark payment alert as shown
     }
-  }, [accepted, paid, shownAcceptedModal, shownPaymentModal]);
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setAcceptedBooking(null);
-    setAccepted(false);
-  };
-
-  const closePaymentModal = () => {
-    setPaymentModal(false);
-    setModalIsOpen(false);
-    setAcceptedBooking(null);
-    setAccepted(false);
-    setPaid(false);
-  };
+  }, [accepted, paid, shownAcceptedAlert, shownPaymentAlert]);
 
   return (
     <>
@@ -382,40 +364,6 @@ function DriverDashboardPage() {
           )}
         </div>
       </div>
-
-      <ReactModal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Booking Accepted"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2>Congratulations!</h2>
-        {acceptedBooking && (
-          <div>
-            <p>Booking accepted successfully!</p>
-            <p>
-              User will pick up this car from your location and deliver it after {acceptedBooking.days} days.
-            </p>
-            <p>You will get Rs {acceptedBooking.price}/- as cash</p>
-          </div>
-        )}
-        <button onClick={closeModal}>Okay</button>
-      </ReactModal>
-
-      <ReactModal
-        isOpen={paymentModal}
-        onRequestClose={closePaymentModal}
-        contentLabel="Payment Received"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2>Payment Received</h2>
-        <div>
-          <p>Payment received successfully!</p>
-        </div>
-        <button onClick={closePaymentModal}>Okay</button>
-      </ReactModal>
     </>
   );
 }
